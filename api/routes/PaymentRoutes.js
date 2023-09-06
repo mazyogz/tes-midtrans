@@ -7,8 +7,8 @@ router.post("/process-transaction", (req, res) => {
   try {
     const snap = new midtransClient.Snap({
       isProduction: false,
-      serverKey: "Mid-server-_xIsjzT2W_Xrlkz--o-ucDCQ",
-      clientKey: "Mid-client-NKHUNDYl883ibhdp",
+      serverKey: "SB-Mid-server-v4ZJdgQET4My17Ngk-pb6T1g",
+      clientKey: "SB-Mid-client-HV7aOKK1G2a7GXBn",
     });
 
     const parameter = {

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import axios from "axios";
 const Home = () => {
   const [name, setName] = useState("");
   const [order_id, setOrder_id] = useState("");
   const [total, setTotal] = useState(0);
+
+  const [token, setToken] = useState("");
 
   const process = async () => {
     const data = {
@@ -25,8 +27,52 @@ const Home = () => {
       config
     );
 
-    console.log(response);
+    setToken(response.data.token);
   };
+
+  useEffect(() => {
+    if(token){
+      window.snap.pay(token, {
+        onSuccess: (result) => {
+          localStorage.setItem("Pembayaran", JSON.stringify(result))
+          setToken("");
+        },
+        onPending: (result) => {
+          localStorage.setItem("Pembayaran", JSON.stringify(result))
+          setToken("");
+        },
+        onError: (error) => {
+          console.log(error)
+          setToken("");
+        },
+        onClose: () => {
+          console.log("anda belum menyelesaikan pembayaran")
+          setToken("");
+        },
+      })
+
+      setName("")
+      setOrder_id("")
+      setTotal("")
+    }
+  }, [token]);
+
+  useEffect(()=>{
+    const midtransUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransUrl
+
+
+    const midtransClientKey = "SB-Mid-client-HV7aOKK1G2a7GXBn";
+    scriptTag.setAttribute("data-client-key", midtransClientKey);
+
+    document.body.appendChild(scriptTag)
+
+    return () => {
+      document.body.removeChild(scriptTag)
+    }
+    })
 
   return (
     <Box
